@@ -20,7 +20,7 @@ Form builder for React. Packages with TailwindCSS.
 
 2. Create a renderer that renders each datatype that you specified.
    ```typescript
-    function basicRenderer(formElement: IViewFormElement<BasicTypes>): JSX.Element | null {
+    function basicRenderer(formElement: Core.IViewFormElement<BasicTypes>): JSX.Element | null {
         let el = null;
         switch(formElement.type)
         {
@@ -49,7 +49,7 @@ Form builder for React. Packages with TailwindCSS.
 
 3. Create an object for all the properties you want in your form
    ```typescript
-    const myFormElements: IViewFormElement<BasicTypes>[] = [
+    const myFormElements: Core.IViewFormElement<BasicTypes>[] = [
         { value: "John",  type: "text",      label: "First name",  span: 6 },
         { value: "Doe",   type: "text",      label: "Last name",   span: 6 }
         { value: 25,      type: "number",    label: "Age",         span: 4 },
@@ -58,7 +58,7 @@ Form builder for React. Packages with TailwindCSS.
 
 4. Render your form
    ```typescript
-    <ViewFormBuilder 
+    <Core.ViewFormBuilder 
         formElements={myFormElements} 
         prefix="myForm_" 
         renderer={basicRenderer} 
