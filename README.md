@@ -28,6 +28,8 @@ Form builder for React. Packages with TailwindCSS.
 
 2. Create a renderer that renders each datatype that you specified.
    ```typescript
+   import { Core } from "react-form-element-builder";
+   
     function basicRenderer(formElement: Core.IViewFormElement<BasicTypes>): JSX.Element | null {
         let el = null;
         switch(formElement.type)
