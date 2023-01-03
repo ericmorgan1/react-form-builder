@@ -3,19 +3,6 @@ import { IViewFormElement, IEditFormElement } from '../core';
 import { ViewFormBuilder, BasicViewTypes, MantineViewRenderer } from '../package-mantine';
 import { EditFormBuilder, BasicEditTypes, MantineEditRenderer } from '../package-mantine';
 
-/*
-const clientFormElements: IViewFormElement<BasicViewTypes>[] = [
-    { value: firstName,          type: "text",       label: "First name",            span: 6 },
-    { value: lastName,          type: "text",        label: "Last name",             span: 6 },
-    { value: companyName,        type: "text",       label: "Company",               span: 12 },
-    { value: phoneNumber,        type: "tel",        label: "📞 Phone",              span: 6 },
-    { value: emailAddress,       type: "email",      label: "✉️ Email",              span: 6 },
-    { value: city,               type: "text",       label: "City",                  span: 6 },
-    { value: state,              type: "text",       label: "State",                 span: 6 },
-    { value: website,            type: "url",        label: "Website",               span: 12 },
-];
-*/
-
 export default function TestComponent() {
     const [myData, setMyData] = useState<any>({
         firstName: "John",
@@ -78,7 +65,7 @@ export default function TestComponent() {
             <hr />
             
             <div style={{ width: "100%" }}>
-                <EditFormBuilder prefix="clientEditForm_"
+                <EditFormBuilder prefix="editform_"
                     formElements={editFormElements}
                     onChange={(formElement, value) => {
                         setMyData({ ...myData, [formElement.propertyName]: value });

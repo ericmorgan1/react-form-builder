@@ -12,10 +12,10 @@ interface IEditFormBuilderProps<T extends { [key: string]: string }> {
 
 export default function EditFormBuilder<T extends { [key: string]: string }>(props: IEditFormBuilderProps<T>) {
     return (
-        <Grid columns={12} className="mantine_grid">
+        <Grid columns={12}>
             {props.formElements.map((formElement, index) => {
                 return (
-                    <Grid.Col md={formElement.span} key={`${props.prefix}${index}`} className="mantine_col">
+                    <Grid.Col md={formElement.span} key={`${props.prefix}${index}`}>
                         <EditFormElementBuilder formElement={formElement} onChange={props.onChange} renderer={props.renderer} />
                     </Grid.Col>
                 );
