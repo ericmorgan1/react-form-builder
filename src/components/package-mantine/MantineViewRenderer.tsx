@@ -5,7 +5,7 @@ import { IViewFormElement } from "../core";
 import { BasicViewTypes } from ".";
 import TelephoneAnchor from "./TelephoneAnchor";
 
-export default function MantineViewRenderer(formElement: IViewFormElement<BasicViewTypes>): JSX.Element | null {
+export default function MantineViewRenderer<T extends BasicViewTypes>(formElement: IViewFormElement<T>): JSX.Element | null {
     
     let el = null;
     switch(formElement.type)
