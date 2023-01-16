@@ -2,126 +2,155 @@
 Form builder for React. Packages with TailwindCSS.
 
 ## Installation
-1. Install TailwindCSS per the instructions here: https://tailwindcss.com/docs/guides/create-react-app
-2. `npm install react-form-element-builder --save`
-3. Add an empty div somewhere with the TailwindCSS classes so they get included:
-```tsx
-<div className="grid grid-cols-12 col-span-1 col-span-2 col-span-3 col-span-4 col-span-5 col-span-6 col-span-7 col-span-8 col-span-9 col-span-10 col-span-11 col-span-12 "></div>
+`npm install react-form-element-builder --save`
+
+## View-Only Form Usage (Basic)
+1. Import the package(s) you'd like to use.
+```typescript
+import { Core, Mantine } from "react-form-element-builder";
 ```
-## How to Use (from scratch)
+
+2. Create an array of `ViewFormElements` thatfor the data you want to display
+```typescript
+const [myData, setMyData] = useState<any>({ first: "John", last: "Smith" });
+const viewFormElements: Core.IViewFormElement<Mantine.BasicViewTypes>[] = [
+    { value: myData.first, type: "text", label: "First", span: 6 },
+    { value: myData.last, type: "text", label: "Last", span: 6 },
+];
+```
+
+3. Render the form with the `ViewFormBuilder`
+```typescript
+<Mantine.ViewFormBuilder prefix="viewform_" formElements={viewFormElements} renderer={Mantine.MantineViewRenderer} />
+```
+
+## Editable Form Usage (Basic)
+1. Import the package(s) you'd like to use
+```typescript
+import { Core, Mantine } from "react-form-element-builder";
+```
+
+2. Create an array of `EditFormElements` thatfor the data you want to display
+```typescript
+const [myData, setMyData] = useState<any>({ first: "John", last: "Smith" });
+const editFormElements: Core.IEditFormElement<Mantine.BasicEditTypes>[] = [
+    { 
+      value: myData.first, type: "text", label: "First", placeholder: "First", 
+      propertyName: "first", disabled: false, span: 6, required: true 
+    },
+
+    { 
+      value: myData.last, type: "text", label: "Last", placeholder: "Last", 
+      propertyName: "last", disabled: false, span: 6, required: true 
+    },
+];
+```
+
+3. Render the form with the `EditFormBuilder`
+```typescript
+<Mantine.ViewFormBuilder prefix="viewform_" formElements={viewFormElements} renderer={Mantine.MantineViewRenderer} />
+```
+
+## Data Types
+Change the `type` of data for the form elements to control how they will be rendered or edited.
+
+## Complete Example (Basic)
+```typescript
+import { useState } from "react";
+import { Core, Mantine } from "react-form-element-builder";
+
+export default function Home() {
+  const [myData, setMyData] = useState<any>({ first: "John", last: "Smith" });
+  const viewFormElements: Core.IViewFormElement<Mantine.BasicViewTypes>[] = [
+    { value: myData.first, type: "text", label: "Name", span: 6 }
+  ];
+
+  const editFormElements: Core.IEditFormElement<Mantine.BasicEditTypes>[] = [
+    { 
+      value: myData.first, type: "text", label: "First", placeholder: "First", 
+      propertyName: "first", disabled: false, span: 6, required: true 
+    },
+
+    { 
+      value: myData.last, type: "text", label: "Last", placeholder: "Last", 
+      propertyName: "last", disabled: false, span: 6, required: true 
+    },
+  ];  
+
+  return (
+    <div>
+        <Mantine.ViewFormBuilder 
+            prefix="viewform_" 
+            formElements={viewFormElements} 
+            renderer={Mantine.MantineViewRenderer} 
+        />
+
+        <Mantine.EditFormBuilder 
+            prefix="editform_"
+            formElements={editFormElements}
+            onChange={(formElement, value) => {
+                setMyData({ ...myData, [formElement.propertyName]: value });
+            }}
+            renderer={Mantine.MantineEditRenderer}
+        />
+    </div>
+  )
+}
+```
+
+## Usage (Advanced)
 1. Create a `type` specifying which datatypes you want to support.
-   ```typescript
-    export type BasicTypes = {
-        "text":         "";
-        "boolean":      "";
-        "tel":          "";
-        "email":        "";
-        "date":         "";
-        "time":         "";
-        "timerange":    "";
-        "url":          "";
-        "color":        "";
-        "divider":      "";
-    }
-   ```
+```typescript
+import { BasicViewTypes } from "react-form-element-builder";
 
-2. Create a renderer that renders each datatype that you specified.
-   ```typescript
-    import { Core } from "react-form-element-builder";
+export type MyBasicTypes = BasicViewTypes & {
+    "myCustomType": "";
+}
+```
 
-    function basicRenderer(formElement: Core.IViewFormElement<BasicTypes>): JSX.Element | null {
-        let el = null;
-        switch(formElement.type)
-        {
-            case "text":
-            el = 
-                <>
-                <span>{formElement.label}</span>
-                <span>{formElement.value ?? "-"}</span>
-                </>
-            break;
+2. Create a renderer that renders each datatype that you specified. If you want to reuse existing types, you can simply handle the new types you added and fallback to the preconfigured package for everything else.
+```typescript
+import { Core } from "react-form-element-builder";
 
-            case "boolean":
-            el = 
-                <>
-                <span>{formElement.label}</span>
-                <input type="checkbox" value={formElement.value ?? false} />;
-                </>
-            break;
-
-            ...
-        }
-
+function basicRenderer(formElement: Core.IViewFormElement<BasicTypes>): JSX.Element | null {
+    let el = null;
+    switch(formElement.type)
+    {
+        case "myCustomType":
+        el = 
+            <>
+            <span>{formElement.label}</span>
+            <span>{formElement.value ?? "-"}</span>
+            </>
         return el;
+
+        // Add additional types here
     }
-   ```
+
+    // Fallback to MantineViewRender for everything else...
+    return Mantine.MantineViewRenderer(formElement);
+}
+```
 
 3. Create an object for all the properties you want in your form
-   ```typescript
-    const myFormElements: Core.IViewFormElement<BasicTypes>[] = [
-        { value: "John",  type: "text",      label: "First name",  span: 6 },
-        { value: "Doe",   type: "text",      label: "Last name",   span: 6 }
-        { value: 25,      type: "number",    label: "Age",         span: 4 },
-    ];
-   ```
+```typescript
+const myFormElements: Core.IViewFormElement<BasicTypes>[] = [
+    { value: "John",  type: "text",      label: "First name",  span: 6 },
+    { value: "Doe",   type: "text",      label: "Last name",   span: 6 }
+    { value: 25,      type: "number",    label: "Age",         span: 4 },
+];
+```
 
-4. Render your form
-   ```typescript
-    <Core.ViewFormBuilder 
-        formElements={myFormElements} 
-        prefix="myForm_" 
-        renderer={basicRenderer} 
-    />
-   ```
+4. Render your form and specify the renderer you want to use
+```typescript
+import { editRenderer } from "./../components/editRenderer";
 
-## How To Use (with pre-configured package)
-To use a preconfigured package (such as the Mantine package), follow these instructions:
-
-    ```typescript
-    import { Core, Mantine } from 'react-form-element-builder';
-
-    const [myData, setMyData] = useState<any>({ name: "John" });
-    const viewFormElements: Core.IViewFormElement<Mantine.BasicViewTypes>[] = [
-        { value: myData.name, type: "text", label: "Name", span: 6 }
-    ];
-    const editFormElements: Core.IEditFormElement<Mantine.BasicEditTypes>[] = [
-        { value: myData.name, type: "text", label: "Name", placeholder: "Name", propertyName: "name", disabled: false, span: 6, required: true }
-    ];
-
-    <Mantine.ViewFormBuilder prefix="viewform_" formElements={viewFormElements} renderer={Mantine.MantineViewRenderer} />
-    <Mantine.EditFormBuilder prefix="editform_"
-        formElements={editFormElements}
-        onChange={(formElement, value) => {
-            setMyData({ ...myData, [formElement.propertyName]: value });
-        }}
-        renderer={Mantine.MantineEditRenderer}
-    />
-
-
-
-
-
-    import { IViewFormElement, IEditFormElement } from '../core';
-    import { ViewFormBuilder, BasicViewTypes, MantineViewRenderer } from '../package-mantine';
-    import { EditFormBuilder, BasicEditTypes, MantineEditRenderer } from '../package-mantine';
-
-    const [myData, setMyData] = useState<any>({ name: "John" });
-    const viewFormElements: IViewFormElement<BasicViewTypes>[] = [
-        { value: myData.name, type: "text", label: "Name", span: 6 }
-    ];
-    const editFormElements: IEditFormElement<BasicEditTypes>[] = [
-        { value: myData.name, type: "text", label: "Name", placeholder: "Name", propertyName: "name", disabled: false, span: 6, required: true }
-    ];
-
-    <ViewFormBuilder prefix="viewform_" formElements={viewFormElements} renderer={MantineViewRenderer} />
-    <EditFormBuilder prefix="editform_"
-        formElements={editFormElements}
-        onChange={(formElement, value) => {
-            setMyData({ ...myData, [formElement.propertyName]: value });
-        }}
-        renderer={MantineEditRenderer}
-    />
-    ```
+<Core.ViewFormBuilder 
+    formElements={myFormElements} 
+    prefix="myForm_" 
+    renderer={basicRenderer} 
+/>
+```
 
 ## Test
 - `yarn storybook`
