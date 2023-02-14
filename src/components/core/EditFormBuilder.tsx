@@ -2,14 +2,15 @@ import React from "react";
 import IEditFormElement from "./IEditFormElement";
 import EditFormElementBuilder from "./EditFormElementBuilder";
 
-interface IEditFormBuilderProps<T extends { [key: string]: string }> {
+interface IEditFormBuilderProps<T extends { [key: string]: string }, U> {
+    data: U;
     prefix: string;
     formElements: IEditFormElement<T>[];
     onChange: (formElement: IEditFormElement<T>, value: any) => void;
-    renderer: (formElement: IEditFormElement<T>, onChange: (formElement: IEditFormElement<T>, value: any) => void) => JSX.Element | null;
+    renderer: (data: U, formElement: IEditFormElement<T>, onChange: (formElement: IEditFormElement<T>, value: any) => void) => JSX.Element | null;
 }
 
-export default function EditFormBuilder<T extends { [key: string]: string }>(props: IEditFormBuilderProps<T>) {
+export default function EditFormBuilder<T extends { [key: string]: string }, U>(props: IEditFormBuilderProps<T, U>) {
     return (
         <div className="grid grid-cols-12">
             {/* Include all col-spans so Tailwind will include them when it scans */}
@@ -18,7 +19,7 @@ export default function EditFormBuilder<T extends { [key: string]: string }>(pro
             {props.formElements.map((formElement, index) => {
                 return (
                     <div className={`col-span-${formElement.span}`} key={`${props.prefix}${index}`}>
-                        <EditFormElementBuilder formElement={formElement} onChange={props.onChange} renderer={props.renderer} />
+                        <EditFormElementBuilder<T,U> data={props.data} formElement={formElement} onChange={props.onChange} renderer={props.renderer} />
                     </div>
                 );
             })}

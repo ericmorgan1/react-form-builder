@@ -7,7 +7,8 @@ import StateSelect from "./StateSelect";
 import CountrySelect from "./CountrySelect";
 import EntitySelect from "./EntitySelect";
 
-export default function MantineEditRenderer<T extends BasicEditTypes>(
+export default function MantineEditRenderer<T extends BasicEditTypes, U>(
+    data: U,
     formElement: IEditFormElement<T>, 
     onChange: (formElement: IEditFormElement<T>, value: any) => void): JSX.Element | null {
 

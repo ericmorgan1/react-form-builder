@@ -65,7 +65,8 @@ export default function TestComponent() {
             <hr />
             
             <div style={{ width: "100%" }}>
-                <EditFormBuilder prefix="editform_"
+                <EditFormBuilder<BasicEditTypes, any> prefix="editform_"
+                    data={myData}
                     formElements={editFormElements}
                     onChange={(formElement, value) => {
                         setMyData({ ...myData, [formElement.propertyName]: value });
