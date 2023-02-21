@@ -1,12 +1,14 @@
 import IEditFormElement from "./IEditFormElement";
 
-export interface IEditFormElementBuilderProps<T extends { [key: string]: string }, U> {
-    data: U;
-    formElement: IEditFormElement<T>;       // The element to render
-    onChange: (formElement: IEditFormElement<T>, value: any) => void;
-    renderer: (data: U, formElement: IEditFormElement<T>, onChange: (formElement: IEditFormElement<T>, value: any) => void) => JSX.Element | null;
+export type OnChange<T, S> = (formElement: IEditFormElement<T, S>, value: any, data: T) => void;
+
+export interface IEditFormElementBuilderProps<T, S> {
+    formElement: IEditFormElement<T, S>;
+    data: T; 
+    onChange: OnChange<T, S>;
+    renderer: (formElement: IEditFormElement<T, S>, data: T, onChange: OnChange<T, S>) => JSX.Element | null;
 }
 
-export default function EditFormElementBuilder<T extends { [key: string]: string }, U>(props: IEditFormElementBuilderProps<T, U>) {
-    return props.renderer(props.data, props.formElement, props.onChange);
+export default function EditFormElementBuilder<T, S>(props: IEditFormElementBuilderProps<T, S>) {
+    return props.renderer(props.formElement, props.data, props.onChange);
 }

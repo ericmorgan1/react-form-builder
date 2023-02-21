@@ -5,7 +5,7 @@ import { IViewFormElement } from "../core";
 import { BasicViewTypes } from ".";
 import TelephoneAnchor from "./TelephoneAnchor";
 
-export default function MantineViewRenderer<T extends BasicViewTypes>(formElement: IViewFormElement<T>): JSX.Element | null {
+export default function MantineViewRenderer<T, S extends BasicViewTypes>(formElement: IViewFormElement<T, S>, data: T): JSX.Element | null {
     
     let el = null;
     switch(formElement.type)
@@ -14,12 +14,12 @@ export default function MantineViewRenderer<T extends BasicViewTypes>(formElemen
           el = 
               <>
               <Text weight={700}>{formElement.label}</Text>
-              <Text>{formElement.value ?? "-"}</Text>
+              <Text>{formElement.getValue(data) ?? "-"}</Text>
               </>
           break;
 
         case "boolean":
-          el = <Checkbox value={formElement.value ?? false} 
+          el = <Checkbox value={formElement.getValue(data) ?? false} 
           disabled
           label={formElement.label} />;
           break;
@@ -28,8 +28,8 @@ export default function MantineViewRenderer<T extends BasicViewTypes>(formElemen
             el =
                 <>
                 <Text weight={700}>{formElement.label}</Text>
-                {formElement.value
-                    ? <TelephoneAnchor display={formElement.value ?? "-"} phoneNumber={formElement.value ?? ""} />
+                {formElement.getValue(data)
+                    ? <TelephoneAnchor display={formElement.getValue(data) ?? "-"} phoneNumber={formElement.getValue(data) ?? ""} />
                     : <Text>-</Text>
                 }
                 </>
@@ -39,27 +39,27 @@ export default function MantineViewRenderer<T extends BasicViewTypes>(formElemen
             el =
                 <>
                 <Text weight={700}>{formElement.label}</Text>
-                {formElement.value
-                    ? <Anchor href={`mailto:${formElement.value ?? ""}`}>{formElement.value ?? "-"}</Anchor>
+                {formElement.getValue(data)
+                    ? <Anchor href={`mailto:${formElement.getValue(data) ?? ""}`}>{formElement.getValue(data) ?? "-"}</Anchor>
                     : <Text>-</Text>                
                 }
                 </>
           break;
 
         case "date":
-          el = <DatePicker value={formElement.value ?? null}
+          el = <DatePicker value={formElement.getValue(data) ?? null}
             disabled
             label={formElement.label} placeholder={formElement.label} />;
           break;
 
         case "time":
-          el = <TimeInput value={formElement.value ?? null}
+          el = <TimeInput value={formElement.getValue(data) ?? null}
             format="12" disabled
             label={formElement.label} placeholder={formElement.label} />;
           break;
 
           case "timerange":
-            el = <TimeRangeInput value={formElement.value ?? [null, null]}
+            el = <TimeRangeInput value={formElement.getValue(data) ?? [null, null]}
               format="12" disabled
               label={formElement.label} placeholder={formElement.label} />;
             break;
@@ -68,15 +68,15 @@ export default function MantineViewRenderer<T extends BasicViewTypes>(formElemen
             el =
                 <>
                 <Text weight={700}>{formElement.label}</Text>
-                {formElement.value
-                    ? <Anchor target="_blank" href={formElement.value ?? ""}>{formElement.value ?? "-"}</Anchor>
+                {formElement.getValue(data)
+                    ? <Anchor target="_blank" href={formElement.getValue(data) ?? ""}>{formElement.getValue(data) ?? "-"}</Anchor>
                     : <Text>-</Text>
                 }
                 </>
           break;
 
           case "color":
-              el = <ColorSwatch color={formElement.value ?? ""} />
+              el = <ColorSwatch color={formElement.getValue(data) ?? ""} />
             break;
 
 

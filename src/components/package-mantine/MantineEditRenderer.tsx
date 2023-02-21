@@ -7,55 +7,54 @@ import StateSelect from "./StateSelect";
 import CountrySelect from "./CountrySelect";
 import EntitySelect from "./EntitySelect";
 
-export default function MantineEditRenderer<T extends BasicEditTypes, U>(
-    data: U,
-    formElement: IEditFormElement<T>, 
-    onChange: (formElement: IEditFormElement<T>, value: any) => void): JSX.Element | null {
+export type OnChange<T, S> = (formElement: IEditFormElement<T, S>, value: any, data: T) => void;
+
+export default function MantineEditRenderer<T, S extends BasicEditTypes>(formElement: IEditFormElement<T, S>, data: T, onChange: OnChange<T, S>): JSX.Element | null {
 
     let el = null;
     switch(formElement.type)
     {
         case "text":
-          el = <TextInput value={formElement.value ?? ""}
+          el = <TextInput value={formElement.getValue(data) ?? ""}
             label={formElement.label} placeholder={formElement.placeholder} disabled={formElement.disabled} required={formElement.required}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => { onChange(formElement, event.target.value); }} />;
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => { onChange(formElement, event.target.value, data); }} />;
           break;
 
         case "boolean":
-          el = <Checkbox checked={formElement.value ?? false}
+          el = <Checkbox checked={formElement.getValue(data) ?? false}
             label={formElement.label} disabled={formElement.disabled} required={formElement.required}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => { onChange(formElement, event.target.checked); }} />;
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => { onChange(formElement, event.target.checked, data); }} />;
           break;
 
         case "tel":
-          el = <TextInput type="tel" value={formElement.value ?? ""}
+          el = <TextInput type="tel" value={formElement.getValue(data) ?? ""}
             label={formElement.label} placeholder={formElement.placeholder} disabled={formElement.disabled} required={formElement.required}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => { onChange(formElement, event.target.value); }} />;
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => { onChange(formElement, event.target.value, data); }} />;
           break;
 
         case "email":
-          el = <TextInput type="email" value={formElement.value ?? ""}
+          el = <TextInput type="email" value={formElement.getValue(data) ?? ""}
             label={formElement.label} placeholder={formElement.placeholder} disabled={formElement.disabled} required={formElement.required}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => { onChange(formElement, event.target.value); }} />;
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => { onChange(formElement, event.target.value, data); }} />;
           break;
 
         case "date":
-          el = <DatePicker value={formElement.value ? new Date(formElement.value) : null}
+          el = <DatePicker value={formElement.getValue(data) ? new Date(formElement.getValue(data)) : null}
             clearable
             label={formElement.label} placeholder={formElement.placeholder} disabled={formElement.disabled} required={formElement.required}
-            onChange={(value: Date | null) => { onChange(formElement, value ? value.getTime() : null); }} />;
+            onChange={(value: Date | null) => { onChange(formElement, value ? value.getTime() : null, data); }} />;
           break;
 
         case "time":
-          el = <TimeInput value={formElement.value ? new Date(formElement.value) : null}
+          el = <TimeInput value={formElement.getValue(data) ? new Date(formElement.getValue(data)) : null}
             format="12" clearable
             label={formElement.label} placeholder={formElement.placeholder} disabled={formElement.disabled} required={formElement.required}
-            onChange={(value: Date | null) => { onChange(formElement, value ? value.getTime() : null); }} />;
+            onChange={(value: Date | null) => { onChange(formElement, value ? value.getTime() : null, data); }} />;
           break;
 
           case "timerange":
-            const t1 = (formElement.value && formElement.value[0]) ? new Date(formElement.value[0]) : null;
-            const t2 = (formElement.value && formElement.value[1]) ? new Date(formElement.value[1]) : null;
+            const t1 = (formElement.getValue(data) && formElement.getValue(data)[0]) ? new Date(formElement.getValue(data)[0]) : null;
+            const t2 = (formElement.getValue(data) && formElement.getValue(data)[1]) ? new Date(formElement.getValue(data)[1]) : null;
 
             el = <TimeRangeInput value={[t1, t2]}
               format="12" clearable
@@ -63,39 +62,39 @@ export default function MantineEditRenderer<T extends BasicEditTypes, U>(
               onChange={(value: [Date | null, Date | null]) => { 
                 const t1 = (value && value[0]) ? value[0].getTime() : null;
                 const t2 = (value && value[1]) ? value[1].getTime() : null;
-                onChange(formElement, [t1, t2]); 
+                onChange(formElement, [t1, t2], data); 
               }} />;
             break;
 
         case "number":
-          el = <NumberInput value={formElement.value ?? ""}
+          el = <NumberInput value={formElement.getValue(data) ?? ""}
             label={formElement.label} placeholder={formElement.placeholder} disabled={formElement.disabled} required={formElement.required}
-            onChange={(value: number | undefined) => { onChange(formElement, value); }} />;
+            onChange={(value: number | undefined) => { onChange(formElement, value, data); }} />;
           break;
 
         case "state":
-          el = <StateSelect value={formElement.value ?? ""}
+          el = <StateSelect value={formElement.getValue(data) ?? ""}
             label={formElement.label} placeholder={formElement.placeholder} disabled={formElement.disabled} required={formElement.required}
-            onChange={(value) => { onChange(formElement, value); }} />;
+            onChange={(value) => { onChange(formElement, value, data); }} />;
           break;
 
         case "country":
-          el = <CountrySelect value={formElement.value ?? ""}
+          el = <CountrySelect value={formElement.getValue(data) ?? ""}
             label={formElement.label} placeholder={formElement.placeholder} disabled={formElement.disabled} required={formElement.required}
-            onChange={(value) => { onChange(formElement, value); }} />;
+            onChange={(value) => { onChange(formElement, value, data); }} />;
           break;
 
         case "businessEntity":
-          el = <EntitySelect value={formElement.value ?? ""}
+          el = <EntitySelect value={formElement.getValue(data) ?? ""}
             label={formElement.label} placeholder={formElement.placeholder} disabled={formElement.disabled} required={formElement.required}
-            onChange={(value) => { onChange(formElement, value); }} />;
+            onChange={(value) => { onChange(formElement, value, data); }} />;
           break;
 
         case "color":
-          el = <ColorInput value={formElement.value ?? ""}
+          el = <ColorInput value={formElement.getValue(data) ?? ""}
             disallowInput withPicker={false}
             label={formElement.label} placeholder={formElement.placeholder} disabled={formElement.disabled} required={formElement.required}
-            onChange={(value: string) => { onChange(formElement, value); }}
+            onChange={(value: string) => { onChange(formElement, value, data); }}
             swatches={[
               ...DEFAULT_THEME.colors.gray,
               ...DEFAULT_THEME.colors.red,

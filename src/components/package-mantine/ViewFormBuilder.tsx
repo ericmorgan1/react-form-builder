@@ -3,19 +3,20 @@ import { Grid } from "@mantine/core";
 import ViewFormElementBuilder from "./../core/ViewFormElementBuilder";
 import { IViewFormElement } from "./../core";
 
-interface IViewFormBuilderProps<T extends { [key: string]: string }> {
+interface IViewFormBuilderProps<T, S> {
     prefix: string;
-    formElements: IViewFormElement<T>[];
-    renderer: (formElement: IViewFormElement<T>) => JSX.Element | null;
+    data: T;
+    formDefintion: IViewFormElement<T, S>[];
+    renderer: (formElement: IViewFormElement<T, S>, data: T) => JSX.Element | null;
 }
 
-export default function ViewFormBuilder<T extends { [key: string]: string }>(props: IViewFormBuilderProps<T>) {
+export default function ViewFormBuilder<T, S>(props: IViewFormBuilderProps<T, S>) {
     return (
         <Grid columns={12}>
-            {props.formElements.map((formElement, index) => {
+            {props.formDefintion.map((formElement, index) => {
                 return (
                     <Grid.Col md={formElement.span} key={`${props.prefix}${index}`}>
-                        <ViewFormElementBuilder formElement={formElement} renderer={props.renderer} />
+                        <ViewFormElementBuilder formElement={formElement} data={props.data} renderer={props.renderer} />
                     </Grid.Col>
                 );
             })}

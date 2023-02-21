@@ -3,10 +3,10 @@
 // You should template with a `type` that contains different data types you want to support.
 // Example: 
 //      type MyTypes = { "text" : "", "boolean": "" }
-//      IEditFormElement<MyTypes>
-export default interface IEditFormElement<T extends { [key: string]: string }> {
-    value:          any;
-    type:           keyof T;
+//      IEditFormElement<IMyData, MyTypes>
+export default interface IEditFormElement<T, S> {
+    getValue:       (data: T) => any;
+    type:           keyof S;
     propertyName:   string;
     label:          string;
     placeholder:    string;
